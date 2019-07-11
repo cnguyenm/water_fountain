@@ -52,5 +52,14 @@ double Vec3::magn()
 	return sqrt(pow(x, 2.0) + pow(y, 2.0) + pow(z, 2.0));
 }
 
+// a = Vec3()
+// b = -a
+Vec3 operator-(Vec3 other)
+{
+	return other * (-1);
+}
 
-
+Vec3 operator*(double v, Vec3 vec)
+{
+	return vec * v;
+}

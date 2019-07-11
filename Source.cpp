@@ -25,6 +25,9 @@ inline void initGame() {
 	cube = Cube();
 	cube.pos = Vec3(0, 6, 0);
 
+	// test: give cube a force
+	cube.vel = Vec3(1, 1, 0);
+
 	cam = GameObject();
 	cam.pos = Vec3(10, 10, 10);
 }
@@ -173,6 +176,7 @@ void render_scene() {
 	draw_cube();
 	
 
+
 	glutSwapBuffers();
 }
 
@@ -192,9 +196,20 @@ void update(int value) {
 	glutTimerFunc(delta_time, update, 1); 
 }
 
+void test() {
+
+	Vec3 a = Vec3(1, -2, 1);
+	Vec3 b = -a;
+
+	printf("b=%f, %f, %f\n", b.x, b.y, b.z);
+}
+
 
 int main(int argc, char ** argv) {
 
+	//test();
+
+	
 	// init
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE);	// enable double bufferd mode
@@ -214,4 +229,5 @@ int main(int argc, char ** argv) {
 	initGame();
 	glutMainLoop();
 	return 0;
+	
 }

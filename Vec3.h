@@ -13,5 +13,8 @@ public:
 
 	// get magnitude of vector
 	double magn();
+
+	friend Vec3 operator - (Vec3 other);
+	friend Vec3 operator * (double v, Vec3 vec);
 };
 
