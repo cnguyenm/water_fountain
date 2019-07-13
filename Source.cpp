@@ -1,6 +1,8 @@
-#include "GL/freeglut.h"
+#include <GL/freeglut.h>
 #include "GameObject.h"
 #include <iostream>
+#include <vector>
+
 #include "Cube.h"
 
 float COLOR_GREEN[3] = {0, 1, 0};
@@ -8,7 +10,26 @@ float ground_size = 4;
 float gravity_rate = 9.8;
 float delta_time = 1000.0/60.0; // 60fps
 Cube cube;
-GameObject cam;  // camera
+Camera cam;  // camera
+
+std::vector<Cube> cubes;
+
+/*
+ * perturbation vector
+ * random force inside unit_sphere
+ */
+inline Vec3 get_rand_force() {
+
+	double t = (double)rand() / RAND_MAX; // random 0->1
+
+	double x = 2 * (t - 0.5);
+	double y = 2 * sqrt(1 - x * x) * (t - 0.5);
+	double z = 2 * sqrt(1 - x * x - y * y) * (t - 0.5);
+
+	// 2x to make it bigger
+	return 2 * Vec3(x, y, z);
+}
+
 
 inline void initGL() {
 
@@ -22,15 +43,26 @@ inline void initGL() {
 
 inline void initGame() {
 
-	cube = Cube();
-	cube.pos = Vec3(0, 6, 0);
+	// test1: give cube a force on air
+	//cube = Cube();
+	//cube.pos = Vec3(0, 6, 0);
+	//cube.vel = Vec3(1, 1, 2);
 
-	// test: give cube a force
-	cube.vel = Vec3(1, 1, 0);
+	// test2: spawn multiple cubes
+	Cube c1;
 
-	cam = GameObject();
-	cam.pos = Vec3(10, 10, 10);
+	int n_cubes = 10;
+	for (int i = 0; i < n_cubes; i++) {
+		c1 = Cube();
+		c1.pos = Vec3(0, 6, 0);
+		c1.vel = get_rand_force();
+		cubes.push_back(c1);
+	}
+
+	cam = Camera();
+	cam.pos = Vec3(15, 15, 15);
 }
+
 
 inline void reshape(int width, int height) {
 
@@ -127,24 +159,6 @@ inline void draw_teapot() {
 	glPopMatrix();
 }
 
-inline void draw_cube() {
-
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-
-	// --- draw 
-	glLoadIdentity();
-	apply_cam();
-
-	glColor3f(0.8f, 0.2f, 0.1f);
-	glTranslatef(cube.pos.x, cube.pos.y, cube.pos.z);
-	glutWireCube(cube.size);
-	// --- /draw
-
-	glPopMatrix();
-	
-}
-
 /*
  * update pos, vel of cube computationally
  * render later
@@ -173,9 +187,12 @@ void render_scene() {
 	// render 
 	draw_axis();
 	draw_ground();
-	draw_cube();
 	
-
+	//draw_cube();
+	//cube.draw(cam);
+	for (int i = 0; i < cubes.size(); i++) {
+		cubes[i].draw(cam);
+	}
 
 	glutSwapBuffers();
 }
@@ -188,8 +205,11 @@ void update(int value) {
 
 	
 	//update_cube();
+	//cube.update();
+	for (int i = 0; i < cubes.size(); i++) {
+		cubes[i].update();
+	}
 
-	cube.update();
 	render_scene();
 
 	// schedule call backs, input:msec
@@ -198,10 +218,18 @@ void update(int value) {
 
 void test() {
 
-	Vec3 a = Vec3(1, -2, 1);
-	Vec3 b = -a;
+	for (int i = 0; i < 10; i++) {
 
-	printf("b=%f, %f, %f\n", b.x, b.y, b.z);
+		double t = (double)rand() / RAND_MAX; // random 0->1
+
+		double x = 2 * (t - 0.5);
+		double y = 2 * sqrt(1 - x * x) * (t - 0.5);
+		double z = 2 * sqrt(1 - x * x - y * y) * (t - 0.5);
+
+		printf("%f, %f, %f\n", x, y, z);
+
+	}
+	
 }
 
 

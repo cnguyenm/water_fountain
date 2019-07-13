@@ -1,4 +1,7 @@
 #pragma once
+
+#include "Vec3.h"
+
 class Config
 {
 public:
@@ -11,5 +14,7 @@ public:
 
 	// how much a cube will bounce back when hitting
 	static const double ELASTIC_CONST;
+
+	static const Vec3 COLORS[10];
 };
 

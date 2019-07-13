@@ -2,19 +2,23 @@
 #include <stdio.h>
 
 #include <math.h>
+#include <GL/freeglut.h>
 
 Cube::Cube()
 {
 }
 
-// hardcode detect collision (for now)
+/*
+ * hardcode detect collision (for now)
+ * update gravity, friction
+ */ 
 void Cube::update() {
 
 	if (this->on_still) return;
 
 	// --- if already on ground ---
 	if (this->on_ground) {
-		printf("vel3=%f, %f, %f \n", this->vel.x, this->vel.y, this->vel.z);
+		//printf("vel3=%f, %f, %f \n", this->vel.x, this->vel.y, this->vel.z);
 		update_friction();
 
 		// check stop
@@ -35,8 +39,9 @@ void Cube::update() {
 		this->pos.y = 0.5;
 
 		// stop
+	
 		if ( fabs(this->vel.y) <= 1.0) {
-			printf("on ground now!!\n");
+			//printf("on ground now!!\n");
 			//this->vel = Vec3(0, 0, 0);
 			this->vel.y = 0;
 			this->pos.y = 0.5;
@@ -57,6 +62,23 @@ void Cube::update() {
 	
 	this->update_gravity();
 
+}
+
+void Cube::draw(Camera cam)
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+
+	// --- draw 
+	glLoadIdentity();
+	cam.apply();
+
+	glColor3f(0.8f, 0.2f, 0.1f);
+	glTranslatef(this->pos.x, this->pos.y, this->pos.z);
+	glutWireCube(this->size);
+	// --- /draw
+
+	glPopMatrix();
 }
 
 /*
@@ -93,5 +115,5 @@ void Cube::update_gravity()
 	Vec3 P = this->pos + this->vel * t;
 	this->vel = V;
 	this->pos = P;
-	printf("vel2=%f, %f, %f \n", this->vel.x, this->vel.y, this->vel.z);
+	//printf("vel2=%f, %f, %f \n", this->vel.x, this->vel.y, this->vel.z);
 }

@@ -14,6 +14,6 @@ public:
 
 	GameObject();
 	virtual void update() {};
-	virtual void draw() {};
+	
 };
 
